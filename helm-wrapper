@@ -1,0 +1,25 @@
+#! /usr/bin/env bash
+
+#
+# This script is a "front end" to the helm binary. You'll
+# typically install it as "helm" in some directory that will
+# be called before where the helm binary is in the PATH.
+#
+
+# Edit this file to point to where you
+# installed the helm-wrapper.py script
+# I assume the set-up of KK lab with these defaults:
+
+REAL_HELM=/opt/homebrew/bin/helm
+WRAPPER_INSTALL_DIR=.
+
+. $WRAPPER_INSTALL_DIR/hwrap_settings.py
+
+
+if CMD=$(python3 $WRAPPER_INSTALL_DIR/helm_wrap.py $@); then
+  echo "command: $CMD"
+  exec $CMD
+else
+  echo helm command failed to parse
+fi
+

@@ -89,7 +89,7 @@ def build_command(arg_list):
     parser.add_argument("-n", "--namespace", help="K8s namespace",
                         type=str, default="default")
     parser.add_argument('command', type=str)
-    parser.add_argument('verb', type=str)
+    # parser.add_argument('verb', type=str)
 
     args, items = parser.parse_known_args(arg_list)
     items = strip_flags(items)
@@ -97,10 +97,10 @@ def build_command(arg_list):
 
     repos = get_handles()
 
-    if len(items) > 3 and items[1] == "install":
-        if items[3] == "":
+    if len(items) > 2 and items[0] == "install":
+        if items[2] == "":
             raise Exception("repo spec is required")
-        arg3 = items[3]
+        arg3 = items[2]
         scheme, host, handle, repo = parse_repo_spec(arg3)
 
         # print(scheme, host, handle, repo)
@@ -108,7 +108,7 @@ def build_command(arg_list):
             arg3 = f"oci://{HARBOR_HOST}/bitnami/{repo}"
             # print("full repo: ", arg3)
 
-        cmd = f"{REAL_HELM} install {items[2]} {arg3}"
+        cmd = f"{REAL_HELM} install {items[1]} {arg3}"
 
 
     else:

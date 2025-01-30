@@ -84,31 +84,46 @@ def build_command(arg_list):
         return build_help_cmd(arg_list)
 
     parser = argparse.ArgumentParser(add_help=False)
-
-    
     parser.add_argument("-n", "--namespace", help="K8s namespace",
                         type=str, default="default")
+
+    positionals = strip_flags(arg_list)
     parser.add_argument('command', type=str)
-    # parser.add_argument('verb', type=str)
+    pos_count = len(positionals)
+    verb =  arg1 = arg2 = arg3 = ""
+
+    if pos_count > 1:
+        parser.add_argument('verb', type=str)
+        verb = positionals[1]
+    # if pos_count > 2:
+    #     parser.add_argument('arg1', type=str)
+    #     arg1 = positionals[2]
+    # if pos_count > 3:
+    #     parser.add_argument('arg2', type=str)
+    #     arg2 = positionals[3]
+    # if pos_count > 4:
+    #     parser.add_argument('arg3', type=str)
+    #     arg3 = positionals[4]
+    
+
 
     args, items = parser.parse_known_args(arg_list)
-    items = strip_flags(items)
     
 
     repos = get_handles()
 
-    if len(items) > 2 and items[0] == "install":
-        if items[2] == "":
+    if verb == "install" and len(items) > 1:
+        arg1, arg2 = items[0:2]
+        if arg2 == "":
             raise Exception("repo spec is required")
-        arg3 = items[2]
-        scheme, host, handle, repo = parse_repo_spec(arg3)
+        scheme, host, handle, repo = parse_repo_spec(arg2)
 
         # print(scheme, host, handle, repo)
         if handle in repos:
             arg3 = f"oci://{HARBOR_HOST}/bitnami/{repo}"
             # print("full repo: ", arg3)
 
-        cmd = f"{REAL_HELM} install {items[1]} {arg3}"
+        cmd = f"{REAL_HELM} install {arg1} {arg2}"
 
 
     else:

@@ -9,10 +9,14 @@
             "name": "Python Debugger: Current File with Arguments",
             "type": "debugpy",
             "request": "launch",
-            "program": "${file}",
+            "program": "${workspaceFolder}/helm_wrap.py",
             "console": "integratedTerminal",
             "args": [
-                "${command:pickArgs}"
+               "-n",
+               "lego",
+                "list",
+                //"test2",
+                //"bitnami/mariadb"
             ]
         }
     ]

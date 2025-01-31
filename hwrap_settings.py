@@ -7,4 +7,3 @@ WRAPPER_INSTALL_DIR="/usr/local/bin"
 BITNAMI_HOST="https://charts.bitnami.com/bitnami"
 
 
-

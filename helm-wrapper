@@ -10,7 +10,7 @@
 # installed the helm-wrapper.py script
 # I assume the set-up of KK lab with these defaults:
 
-REAL_HELM=/opt/homebrew/bin/helm
+REAL_HELM=/usr/bin/helm
 WRAPPER_INSTALL_DIR=.
 
 . $WRAPPER_INSTALL_DIR/hwrap_settings.py

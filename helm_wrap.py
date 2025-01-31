@@ -120,8 +120,8 @@ def build_command(arg_list):
 
         # print(scheme, host, handle, repo)
         if handle in repos:
-            arg3 = f"oci://{HARBOR_HOST}/bitnami/{repo}"
-            # print("full repo: ", arg3)
+            arg2 = f"oci://{HARBOR_HOST}/bitnami/{repo}"
+            # print("full repo: ", arg2)
 
         cmd = f"{REAL_HELM} install {arg1} {arg2}"
 

@@ -36,9 +36,11 @@ I'm mostly following [this tutorial](https://itnext.io/are-you-affected-by-bitna
 
 ## Issues with the code
 
-I'm currently using the argparser library in python, and am frankly unhappy with it.  Basic stuff works, but the emulation right now is brittle and a lot of flags will annoy the code. I'm very open to suggestions for a better library :-) 
+I'm currently using the argparser library in python, and am frankly unhappy with it.  Basic stuff works, but the emulation right now is brittle and a lot of flags will annoy the code.  This problem is mostly resolved, since I've tested against a wide range of helm commands, most of which I just have to pass through without garbling.  
 
 ## Caveats
 
-Definitely alpha quality code, if that. May eat your neighbor's kids, break your legs, or vote for the wrong people, G'd forbid.
+Definitely alpha quality code, although it's getting usable for our purposes. Still, may eat your neighbor's kids or your cat,  break your legs, or vote for the wrong people, G'd forbid.
+
+As for license: I make no claims 'bout nuttin'. Just spell my name right, Okay?
  

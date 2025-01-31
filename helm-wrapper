@@ -10,6 +10,11 @@
 # installed the helm-wrapper.py script
 # I assume the set-up of KK lab with these defaults:
 
+# For remote debugging, uncomment the next line
+# note that you may need to edit .vscode/launch.json
+# for your configuration to work.
+# export DEBUG_WRAPPER=1
+
 REAL_HELM=/usr/bin/helm
 WRAPPER_INSTALL_DIR=.
 

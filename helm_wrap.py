@@ -1,11 +1,14 @@
 #! /usr/bin/env python3
 
 import sys
+import os
 import argparse
 import re 
 from urllib.parse import urlparse
 from subprocess import run
 from hwrap_settings import REAL_HELM, BITNAMI_HOST, HARBOR_HOST
+
+
 
 def get_handles():
     cmd = f"{REAL_HELM} repo list"
@@ -141,6 +144,11 @@ def build_command(arg_list):
 
 if __name__ == '__main__':
     # Execute when the module is not initialized from an import statement.
+    if 'DEBUG_WRAPPER' in os.environ:
+        import debugpy
+        debugpy.listen(('0.0.0.0', 5678))
+        print("Waiting for debugger attach", file=sys.stderr)
+        debugpy.wait_for_client()
 
     # input = [
     #     "helm repo list",

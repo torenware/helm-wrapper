@@ -34,13 +34,29 @@ I'm mostly following [this tutorial](https://itnext.io/are-you-affected-by-bitna
    * Harbor is served via an ingress.
 * I'm using colima for K8s, since it emulates AMD64 pretty well and keeps the harbor binary happy. 
 
+## Installing the Script
+1. Make sure helm is installed on your system.
+2. Install your harbor server and start it up.
+3. Edit `hwsettings.py` and `helm_wrapper` to match where you've installed the helm binary, and what directory from your path that will override your helm binary.  Also, make sure that the HARBOR_HOST variable actually resolves to the IP of the harbor server.
+4. Run install.sh, which will validate your settings, and install to your desired directory. 
+5. Test that the script works by running a simple helm command.  If you try `helm version`, you should get output something like this:
+
+   ```
+$ helm version
+command: /usr/bin/helm version
+version.BuildInfo{Version:"v3.15.3", GitCommit:"3bb50bbbdd9c946ba9989fbe4fb4104766302a64", GitTreeState:"clean", GoVersion:"go1.22.5"}
+
+   ```
+
 ## Issues with the code
 
-I'm currently using the argparser library in python, and am frankly unhappy with it.  Basic stuff works, but the emulation right now is brittle and a lot of flags will annoy the code.  This problem is mostly resolved, since I've tested against a wide range of helm commands, most of which I just have to pass through without garbling.  
+I'm currently using the argparser library in python, and am frankly unhappy with it.  Basic stuff works, but the emulation right now is brittle and a lot of flags will annoy the code.  This problem is mostly resolved, since I've tested against a wide range of helm commands, most of which I just have to pass through without garbling.
+
+I've added support for remote debugging and some simple python unit tests to make the code easier to maintain. The tests should also serve to show how to use the script.
 
 ## Caveats
 
-Definitely alpha quality code, although it's getting usable for our purposes. Still, may eat your neighbor's kids or your cat,  break your legs, or vote for the wrong people, G'd forbid.
+Approaching beta quality code, since it's getting usable for our purposes. Still, may eat your neighbor's kids or your cat,  break your legs, or vote for the wrong people, G'd forbid.
 
-As for license: I make no claims 'bout nuttin'. Just spell my name right, Okay?
+As for license: I make no claims 'bout nuttin'. Just spell my name right, Okay?  Let's say we're under an Apache compatible license and leave it there.
  

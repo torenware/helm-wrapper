@@ -60,7 +60,7 @@ def build_help_cmd(arg_list: list):
           arg_list.remove(token)
     arg_list.append("--help")
     cmd = " ".join(arg_list)
-    return cmd, ""
+    return cmd
 
 def strip_flags(arg_list):
     stripped = []
@@ -139,7 +139,7 @@ def build_command(arg_list):
     #print(f"varb {ns.verb} arg1 {ns.arg1} -n {ns.namespace}")
     # print(rest)
 
-    return (cmd, "")
+    return cmd
 
 
 if __name__ == '__main__':
@@ -167,7 +167,7 @@ if __name__ == '__main__':
     #     cmd, img = build_command(args)
     #     print("CMD: ", cmd)
 
-    cmd, img = build_command(sys.argv)
+    cmd = build_command(sys.argv)
 
     # print("arglist: ", sys.argv)
     print(cmd)

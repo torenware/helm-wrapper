@@ -34,6 +34,44 @@ I'm mostly following [this tutorial](https://itnext.io/are-you-affected-by-bitna
    * Harbor is served via an ingress.
 * I'm using colima for K8s, since it emulates AMD64 pretty well and keeps the harbor binary happy. 
 
+## Alternative: Setting up Docker Private Registry
+
+Since there's more experience with Docker Private Registry (a.k.a. "CNCF Distribution") than with Harbor in these parts, here's the procedure for running DPR using docker-compose:
+
+1. Get a real certificate for the chosen domain. DPR + helm is even pickier than Harbor + helm.
+2. Create an htpasswd for the app. Per the docs, you *must* use bcrypt:
+
+   ```
+      $ htpasswd -B -c htpasswd admin
+   ```
+3. Edit docker-compose-registry.yaml for your cert names, and other details.
+4. Populate ./registry/certs to match the docker config file.
+5. Set up /etc/hosts for your domain to match your cert.
+6. To push a chart to the repo:
+   * Log into the registry:
+   
+     ```
+        $ helm registry login https://YOURDOMAIN:5000
+	 ```
+	* Pull a chart from bitnami:
+	  
+	  ```
+	  	$ helm pull bitnami/mariadb
+	  ```
+	 this will pull down a tar ball from docker.io. You'll need to gzip this file to something like mariadb-TAG.tar.gz, for the next step:
+	* Push the chart to the DPR store:
+	 
+         ```
+            $ helm push mariadb-TAG.tar.gz oci://YOURDOMAIN:5000/bitnami
+		 ```
+	    since DPR does not have separate repo sections the way Harbor does.
+	    
+7. You can now install the chart by doing
+
+   ```
+      $ helm install -n NAMESPACE mydb oci://YOURDOMAIN:5000/bitnami/mariadb
+   ```
+
 ## Installing the Script
 1. Make sure helm is installed on your system.
 2. Install your harbor server and start it up.
@@ -51,6 +89,8 @@ I'm mostly following [this tutorial](https://itnext.io/are-you-affected-by-bitna
 ## Issues with the code
 
 I'm currently using the argparser library in python, and am frankly unhappy with it.  Basic stuff works, but the emulation right now is brittle and a lot of flags will annoy the code.  This problem is mostly resolved, since I've tested against a wide range of helm commands, most of which I just have to pass through without garbling.
+
+Generally speaking, the better quality your TLS certs the less trouble you will have getting any of this to work. While I'm told that self-signed certs can be used with additional configuration, this has not been my luck/experience/karma.  I've mostly been using a Let's Encrypt wild-card cert, and I'd recommend doing something similar for labs.
 
 I've added support for remote debugging and some simple python unit tests to make the code easier to maintain. The tests should also serve to show how to use the script.
 

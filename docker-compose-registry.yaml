@@ -1,6 +1,9 @@
 #
 #  Launcher for the CNEF regisstry for test
 #
+#  You will need to edit this to match your domain,
+#  your cert and key names, etc.
+#
 services:
   registry:
     restart: always

@@ -15,14 +15,15 @@
 # for your configuration to work.
 # export DEBUG_WRAPPER=1
 
-REAL_HELM=/usr/bin/helm
+# Edit this to match the install location
+# as done in hwsettings.py:
 WRAPPER_INSTALL_DIR=.
 
 . $WRAPPER_INSTALL_DIR/hwrap_settings.py
 
 
 if CMD=$(python3 $WRAPPER_INSTALL_DIR/helm_wrap.py $@); then
-  echo "command: $CMD"
+  # echo "command: $CMD"
   exec $CMD
 else
   echo helm command failed to parse

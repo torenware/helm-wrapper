@@ -14,7 +14,8 @@ if [ ! -f $REAL_HELM -o ! -x $REAL_HELM ]; then
   exit 1
 fi 
 
-if ! ping -c 3 $HARBOR_HOST ; then
+HARBOR_DNS=$(echo $HARBOR_HOST | cut -d: -f1)
+if ! ping -c 3 $HARBOR_DNS ; then
   echo "Could not find a server (hoping harbor) at $HARBOR_HOST" >&2 
   exit 1
 else

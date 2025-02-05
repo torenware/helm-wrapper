@@ -5,14 +5,22 @@
 #  your cert and key names, etc.
 #
 services:
+  proxy:
+    restart: always
+    image: nginx
+    ports:
+      - 8443:8443
+    volumes:
+      - ./registry/certs/config.conf:/etc/nginx/conf.d/default.conf
+      - ./registry/certs:/certs
   registry:
     restart: always
     image: registry:2
     ports:
       - 5000:5000
     environment:
-       REGISTRY_HTTP_TLS_CERTIFICATE: /certs/fullchain1.pem
-       REGISTRY_HTTP_TLS_KEY: /certs/privkey1.pem
+       # REGISTRY_HTTP_TLS_CERTIFICATE: /certs/fullchain1.pem
+       # REGISTRY_HTTP_TLS_KEY: /certs/privkey1.pem
        REGISTRY_AUTH: htpasswd
        REGISTRY_AUTH_HTPASSWD_PATH: /auth/htpasswd
        REGISTRY_AUTH_HTPASSWD_REALM: harbor.torensys.com:5000

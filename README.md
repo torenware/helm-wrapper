@@ -8,8 +8,10 @@ The scripts create a wrapper script that fronts for the helm binary, rewriting t
 
 * helm-wrapper a shell script that needs to be installed as "helm" to a directory higher up in PATH than the real binary ("REAL_HELM"). 
 * hwsettings.py a "dual use" file that has valid syntax for both bash *and* python. It needs to be edited to match the location of the various files, and to point to the domain of the Harbor repository.
-helm_wrapper.py, a python script that marshals the CLI command to convert from the common form of `helm install INSTALL_NAME REPO_NAME/CHART_NAME:TAG` to the OCI version of the call pointing to the Harbor install. 
-install.sh a simple install script that reads the information in hwsettings.py and installs to the /usr/local/bin directory by default. This directory needs to be higher in the path than wherever the helm binary is actually installed.
+* helm_wrapper.py, a python script that marshals the CLI command to convert from the common form of `helm install INSTALL_NAME REPO_NAME/CHART_NAME:TAG` to the OCI version of the call pointing to the Harbor install. 
+* install.sh a simple install script that reads the information in hwsettings.py and installs to the /usr/local/bin directory by default. This directory needs to be higher in the path than wherever the helm binary is actually installed.
+* docker-compose-registry.yaml: this is a docker-compose file to run Docker Private Registry instead of using Harbor, if that's desired.
+* test.py: Python unit tests for the command parser.
 
 ## Settings
 

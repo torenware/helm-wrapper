@@ -10,7 +10,9 @@ The scripts create a wrapper script that fronts for the helm binary, rewriting t
 * hwsettings.py a "dual use" file that has valid syntax for both bash *and* python. It needs to be edited to match the location of the various files, and to point to the domain of the Harbor repository.
 * helm_wrapper.py, a python script that marshals the CLI command to convert from the common form of `helm install INSTALL_NAME REPO_NAME/CHART_NAME:TAG` to the OCI version of the call pointing to the Harbor install. 
 * install.sh a simple install script that reads the information in hwsettings.py and installs to the /usr/local/bin directory by default. This directory needs to be higher in the path than wherever the helm binary is actually installed.
-* docker-compose-registry.yaml: this is a docker-compose file to run Docker Private Registry instead of using Harbor, if that's desired.
+* docker-compose-registry.yaml: this is a docker-compose file to run Docker Private Registry instead of using Harbor, if that's desired.  The file brings up DPR as an HTTP only service, with TLS handled via an nginx reverse proxy. 
+* registry/ directory is used by the docker-compose file. Certificates, keys, and the basic auth htpasswd file go in here.
+* proxy.conf -- nginx reverse proxy configuration to put TLS in front of a HTTP DPR registry. This is sym-linked into the registry directory hierarchy.
 * test.py: Python unit tests for the command parser.
 
 ## Settings

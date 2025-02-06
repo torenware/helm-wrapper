@@ -1,5 +1,5 @@
 #
-#  Launcher for the CNEF regisstry for test
+#  Launcher for the CNCF regisstry for test
 #
 #  You will need to edit this to match your domain,
 #  your cert and key names, etc.
@@ -19,6 +19,8 @@ services:
     ports:
       - 5000:5000
     environment:
+       # DPR can do its own certs, but since we're using
+       # a proxy here, we comment these out:
        # REGISTRY_HTTP_TLS_CERTIFICATE: /certs/fullchain1.pem
        # REGISTRY_HTTP_TLS_KEY: /certs/privkey1.pem
        REGISTRY_AUTH: htpasswd

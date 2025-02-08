@@ -14,13 +14,13 @@ if [ ! -f $REAL_HELM -o ! -x $REAL_HELM ]; then
   exit 1
 fi 
 
-HARBOR_DNS=$(echo $HARBOR_HOST | cut -d: -f1)
-if ! ping -c 3 $HARBOR_DNS ; then
-  echo "Could not find a server (hoping harbor) at $HARBOR_HOST" >&2 
-  exit 1
-else
-  echo "DNS for our harbor host resolves" >&2
-fi 
+# HARBOR_DNS=$(echo $HARBOR_HOST | cut -d: -f1)
+# if ! ping -c 3 $HARBOR_DNS ; then
+#   echo "Could not find a server (hoping harbor) at $HARBOR_HOST" >&2 
+#   exit 1
+# else
+#   echo "DNS for our harbor host resolves" >&2
+# fi 
 
 echo "Copying components to the $WRAPPER_INSTALL_DIR directory..."
 echo

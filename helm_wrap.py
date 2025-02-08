@@ -14,7 +14,7 @@ def get_handles():
     cmd = f"{REAL_HELM} repo list"
     data = run(cmd, capture_output=True, shell=True, text=True)
     if data.returncode != 0:
-        raise Exception(data.stderr)
+        return []
     lines = data.stdout.splitlines()
     first = True
     is_bitnamy = []

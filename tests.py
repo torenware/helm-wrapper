@@ -1,4 +1,4 @@
-import unittest, sys
+import unittest, sys, os
 from unittest.mock import Mock
 from dataclasses import dataclass
 from typing import List
@@ -9,6 +9,7 @@ class TestBuildCommand(unittest.TestCase):
  
     def setUp(self):
         helm_wrap.get_handles = Mock(return_value=['bitnami'])
+        helm_wrap.analyze_install_handle = Mock(return_value=['mariadb', True])
         return super().setUp()
     
 
@@ -44,6 +45,21 @@ class TestBuildCommand(unittest.TestCase):
                 input = "helm repo list",
                 expected=[REAL_HELM, "repo", "list",]
             ),
+            TestCase(
+                name = "helm pull",
+                input = "helm pull bitnami/mariadb",
+                expected=[REAL_HELM, "pull",
+                         f"oci://{HARBOR_HOST}/bitnami/mariadb"
+                    ],            
+            ),
+            TestCase(
+                name = "helm upgrade",
+                input = "helm upgrade test1 --version 1.10",
+                expected=[REAL_HELM, "upgrade", "test1",
+                         f"oci://{HARBOR_HOST}/bitnami/mariadb",
+                         "--version", "1.10"
+                    ],            
+            ),
 
         ]
 
@@ -67,4 +83,11 @@ class TestBuildCommand(unittest.TestCase):
 
 
 if __name__ == '__main__':
+    # Execute when the module is not initialized from an import statement.
+    if 'DEBUG_WRAPPER_TEST' in os.environ:
+        import debugpy
+        debugpy.listen(('0.0.0.0', 5678))
+        print("Waiting for debugger attach", file=sys.stderr)
+        debugpy.wait_for_client()
+
     unittest.main()

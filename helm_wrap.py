@@ -3,7 +3,8 @@
 import sys
 import os
 import argparse
-import re 
+import re
+import json
 from urllib.parse import urlparse
 from subprocess import run
 from hwrap_settings import REAL_HELM, BITNAMI_HOST, HARBOR_HOST
@@ -26,6 +27,25 @@ def get_handles():
             if repo == BITNAMI_HOST:
                 is_bitnamy.append(keyword)
     return is_bitnamy
+
+def analyze_install_handle(install, ns):
+    """
+    returns chart_name, is_dockerio_chart
+    """
+    is_dockerio_chart = False
+    cmd = f"{REAL_HELM} get metadata {install} -n {ns} -o json"
+    data = run(cmd, capture_output=True, shell=True, text=True)
+    if data.returncode != 0:
+        return False, ""
+    stats = json.loads(data.stdout)
+    if "dependencies" in stats:
+            for item in stats['dependencies']:
+                if item['name'] == 'common':
+                    if "repository" in item:
+                        if "docker.io" in item['repository']:
+                            is_dockerio_chart = True
+    chart = stats["chart"]
+    return chart, is_dockerio_chart
 
 def parse_repo_spec(repo_spec):
     parts = urlparse(repo_spec)
@@ -126,12 +146,40 @@ def build_command(arg_list):
             arg2 = f"oci://{HARBOR_HOST}/bitnami/{repo}"
             # print("full repo: ", arg2)
 
-        cmd = f"{REAL_HELM} install {arg1} {arg2}"
+        cmd = f"{REAL_HELM} install {arg1} {arg2} -n {args.namespace}"
 
+    elif verb == "pull" and len(items) >= 1:
+        """
+        helm pull REPO_SPEC [--version VER]
+        """
+        repo_spec = items[0]
+        rest = items[1:]
+        scheme, host, handle, repo = parse_repo_spec(repo_spec)
+        if handle in repos:
+            repo_spec = f"oci://{HARBOR_HOST}/bitnami/{repo}"
+        cmd = f"{REAL_HELM} pull {repo_spec}"
+        if len(rest) > 0:
+            cmd += " " + " ".join(rest)
+
+    elif verb == "upgrade" and len(items) >= 1:
+        """
+        helm upgrade HANDLE [--version VERS]
+        """
+        handle = items[0]
+        repo_spec = ""
+        rest = items[1:]
+        chart, is_dockerio = analyze_install_handle(handle, args.namespace)
+        if is_dockerio:
+            repo_spec = f"oci://{HARBOR_HOST}/bitnami/{chart}" 
+        cmd = f"{REAL_HELM} upgrade {handle} {repo_spec}"
+        if len(rest) > 0:
+            cmd += " " + " ".join(rest)
+        cmd += f" -n {args.namespace}"
+        
 
     else:
         arg_list[0] = REAL_HELM 
-        cmd = " ".join(arg_list)
+        cmd = " ".join(arg_list) + " -n " + args.namespace
 
     
 

@@ -5,14 +5,16 @@ import os
 from subprocess import run
 from hwrap_settings import REAL_HELM, BITNAMI_HOST, HARBOR_HOST
 
+BITNAMI_HOST = "https://charts.bitnami.com/bitnami"
+
 def get_handles():
     """Retrieve Helm repository handles"""
     cmd = f"{REAL_HELM} repo list"
     data = run(cmd, capture_output=True, shell=True, text=True)
     if data.returncode != 0:
-        return []
+        return {}
     lines = data.stdout.splitlines()[1:]  # Skip header
-    return [line.split()[0] for line in lines if line.split()[1] == BITNAMI_HOST]
+    return {line.split()[0]: line.split()[1] for line in lines}
 
 def parse_repo_spec(repo_spec):
     """Parses repository spec (e.g., 'google-test/tomcat') and extracts repository handle and chart name."""
@@ -81,7 +83,7 @@ def build_command(arg_list):
 
         if chart_name:
             handle, repo = parse_repo_spec(chart_name)
-            if handle in repos:
+            if handle in repos and repos[handle] == BITNAMI_HOST:
                 chart_name = f"oci://{HARBOR_HOST}/bitnami/{repo}"
 
         if release_name and chart_name:
@@ -94,7 +96,7 @@ def build_command(arg_list):
 
         if chart_name:
             handle, repo = parse_repo_spec(chart_name)
-            if handle in repos:
+            if handle in repos and repos[handle] == BITNAMI_HOST:
                 chart_name = f"oci://{HARBOR_HOST}/bitnami/{repo}"
             cmd_parts.append(chart_name)
 

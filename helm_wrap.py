@@ -7,8 +7,7 @@ from hwrap_settings import REAL_HELM, HARBOR_HOST
 
 # Dictionary of repository URLs and their corresponding substitution values
 SUBSTITUTION_HOSTS = {
-    "https://charts.bitnami.com/bitnami": "bitnami",
-    "https://prometheus-community.github.io/helm-charts": "prometheus"
+    "https://charts.bitnami.com/bitnami": "bitnami"
 }
 
 def get_handles():

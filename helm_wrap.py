@@ -2,6 +2,7 @@
 
 import sys
 import os
+import re
 from subprocess import run
 from hwrap_settings import REAL_HELM, HARBOR_HOST
 
@@ -51,6 +52,10 @@ def strip_flags(arg_list):
     stripped, flags = [], []
     skip_next = False
 
+    single_arg_flags = [
+        'untar', 'dry-run'
+    ]
+
     for i, item in enumerate(arg_list):
         if skip_next:
             skip_next = False
@@ -63,7 +68,10 @@ def strip_flags(arg_list):
                 flags.append(value)
             else:
                 flags.append(item)
-                if i + 1 < len(arg_list) and not arg_list[i + 1].startswith("-"):
+                parsed = re.match(r'[\-]+(\S+)', item)
+                if parsed.group(1) in single_arg_flags:
+                    skip_next = False
+                elif i + 1 < len(arg_list) and not arg_list[i + 1].startswith("-"):
                     flags.append(arg_list[i + 1])
                     skip_next = True
             continue  # Don't add the flag itself

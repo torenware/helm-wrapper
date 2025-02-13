@@ -5,6 +5,8 @@ on: push
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+        python_ver: '3.12.1'
     steps:
       - name: Checkout Code
         uses: actions/checkout@v3

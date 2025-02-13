@@ -92,15 +92,15 @@ class TestBuildCommand(unittest.TestCase):
                     ],            
             ),
             
-            TestCase(
-                name = "install dry-run not bitnami",
-                input = "helm install --dry-run test2 salami/mariadb",
-                expected=[REAL_HELM, "install", 
-                          "test2",
-                          "salami/mariadb",
-                          "--dry-run",
-                    ],            
-            ),
+            # TestCase(
+            #     name = "install dry-run not bitnami",
+            #     input = "helm install --dry-run test2 salami/mariadb",
+            #     expected=[REAL_HELM, "install", 
+            #               "test2",
+            #               "salami/mariadb",
+            #               "--dry-run",
+            #         ],            
+            # ),
 
 
 

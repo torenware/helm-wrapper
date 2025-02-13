@@ -61,11 +61,56 @@ class TestBuildCommand(unittest.TestCase):
                     ],            
             ),
 
+            TestCase(
+                name = "helm upgrade non-bitnami",
+                input = "helm upgrade test1  salami/mariadb --version 1.10",
+                expected=[REAL_HELM, "upgrade", "test1",
+                         "salami/mariadb",
+                         "--version", "1.10"
+                    ],            
+            ),
+
+          
+            # handling flags
+
+            TestCase(
+                name = "install not bitnami, namespace late",
+                input = "helm install test2  --namespace appspace salami/mariadb",
+                expected=[REAL_HELM, "install", "test2",
+                          "salami/mariadb",
+                          "--namespace", "appspace",
+                    ],            
+            ),
+            
+            TestCase(
+                name = "install not bitnami, namespace early",
+                input = "helm install -n appspace test2 salami/mariadb",
+                expected=[REAL_HELM, "install", 
+                          "test2",
+                          "salami/mariadb",
+                          "-n", "appspace",
+                    ],            
+            ),
+            
+            TestCase(
+                name = "install dry-run not bitnami",
+                input = "helm install --dry-run test2 salami/mariadb",
+                expected=[REAL_HELM, "install", 
+                          "test2",
+                          "salami/mariadb",
+                          "--dry-run",
+                    ],            
+            ),
+
+
+
+
         ]
 
         for case in testcases:
             args = case.input.split()
             rslt = helm_wrap.build_command(args)
+            print("")
             returned = rslt.split()
             ndx = 0
             for val in case.expected:
@@ -75,9 +120,10 @@ class TestBuildCommand(unittest.TestCase):
                         ndx,
                         f"Case '{case.name}': returned {len(returned)} args, expected at least {len(case.expected)}",
                     )                        
-                    self.assertEqual(returned[ndx], 
-                                     val,
-                                     f"Case '{case.name}', arg {ndx}: expected {case.expected[ndx]}, got {returned[ndx]}"
+                    self.assertEqual(
+                        returned[ndx], 
+                        val,
+                        f"Case '{case.name}',\n\tPassed: {case.input}\n\tReturned: {rslt}\n\targ {ndx}: expected {case.expected[ndx]}, got {returned[ndx]}"
                     )
                 ndx += 1
 

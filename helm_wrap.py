@@ -3,9 +3,12 @@
 import sys
 import os
 from subprocess import run
-from hwrap_settings import REAL_HELM, BITNAMI_HOST, HARBOR_HOST
+from hwrap_settings import REAL_HELM, HARBOR_HOST
 
-BITNAMI_HOST = "https://charts.bitnami.com/bitnami"
+# Dictionary of repository URLs and their corresponding substitution values
+SUBSTITUTION_HOSTS = {
+    "https://charts.bitnami.com/bitnami": "bitnami"
+}
 
 def get_handles():
     """Retrieve Helm repository handles"""
@@ -25,11 +28,22 @@ def uses_help(arg_list):
     """Check if help is requested"""
     return any(token in arg_list for token in ["-h", "--help", "help"])
 
+def uses_version(arg_list):
+    """Check if version is requested"""
+    return any(token in arg_list[1] for token in ["-v", "--version", "version"])
+
 def build_help_cmd(arg_list):
     """Ensure Helm help commands are properly handled"""
     arg_list[0] = REAL_HELM
     arg_list = [arg for arg in arg_list if arg not in ["-h", "--help", "help"]]
     arg_list.append("--help")
+    return " ".join(arg_list)
+
+def build_version_cmd(arg_list):
+    """Ensure Helm version commands are properly handled"""
+    arg_list[0] = REAL_HELM
+    arg_list = [arg for arg in arg_list if arg not in ["-v", "--version", "version"]]
+    arg_list.append("version")
     return " ".join(arg_list)
 
 def strip_flags(arg_list):
@@ -67,6 +81,9 @@ def build_command(arg_list):
     if uses_help(arg_list):
         return build_help_cmd(arg_list)  # Handle help commands
 
+    if uses_version(arg_list):
+        return build_version_cmd(arg_list)  # Handle version commands
+
     repos = get_handles()
     cmd_parts = [REAL_HELM]
     stripped_args, flags = strip_flags(arg_list)
@@ -83,8 +100,8 @@ def build_command(arg_list):
 
         if chart_name:
             handle, repo = parse_repo_spec(chart_name)
-            if handle in repos and repos[handle] == BITNAMI_HOST:
-                chart_name = f"oci://{HARBOR_HOST}/bitnami/{repo}"
+            if handle in repos and repos[handle] in SUBSTITUTION_HOSTS:
+                chart_name = f"oci://{HARBOR_HOST}/{SUBSTITUTION_HOSTS[repos[handle]]}/{repo}"
 
         if release_name and chart_name:
             cmd_parts.extend([release_name, chart_name])
@@ -96,8 +113,8 @@ def build_command(arg_list):
 
         if chart_name:
             handle, repo = parse_repo_spec(chart_name)
-            if handle in repos and repos[handle] == BITNAMI_HOST:
-                chart_name = f"oci://{HARBOR_HOST}/bitnami/{repo}"
+            if handle in repos and repos[handle] in SUBSTITUTION_HOSTS:
+                chart_name = f"oci://{HARBOR_HOST}/{SUBSTITUTION_HOSTS[repos[handle]]}/{repo}"
             cmd_parts.append(chart_name)
 
     cmd_parts.extend(flags)  # Append flags at the end

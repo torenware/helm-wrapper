@@ -8,7 +8,7 @@ from hwrap_settings import REAL_HELM, HARBOR_HOST
 class TestBuildCommand(unittest.TestCase):
  
     def setUp(self):
-        helm_wrap.get_handles = Mock(return_value=['bitnami'])
+        helm_wrap.get_handles = Mock(return_value={'bitnami': "https://charts.bitnami.com/bitnami"})
         helm_wrap.analyze_install_handle = Mock(return_value=['mariadb', True])
         return super().setUp()
     
@@ -54,7 +54,7 @@ class TestBuildCommand(unittest.TestCase):
             ),
             TestCase(
                 name = "helm upgrade",
-                input = "helm upgrade test1 --version 1.10",
+                input = "helm upgrade test1  bitnami/mariadb --version 1.10",
                 expected=[REAL_HELM, "upgrade", "test1",
                          f"oci://{HARBOR_HOST}/bitnami/mariadb",
                          "--version", "1.10"

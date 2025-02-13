@@ -52,7 +52,7 @@ def strip_flags(arg_list):
     stripped, flags = [], []
     skip_next = False
 
-    single_arg_flags = [
+    no_arg_flags = [
         'untar', 'dry-run'
     ]
 
@@ -69,7 +69,7 @@ def strip_flags(arg_list):
             else:
                 flags.append(item)
                 parsed = re.match(r'[\-]+(\S+)', item)
-                if parsed.group(1) in single_arg_flags:
+                if parsed.group(1) in no_arg_flags:
                     skip_next = False
                 elif i + 1 < len(arg_list) and not arg_list[i + 1].startswith("-"):
                     flags.append(arg_list[i + 1])
